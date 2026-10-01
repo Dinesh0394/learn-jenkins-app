@@ -25,7 +25,7 @@ pipeline {
             steps { 
                 sh '''
                     ls -la
-                    cat build/index.html
+                    test -f build/index.html
                 '''
             }
         }
