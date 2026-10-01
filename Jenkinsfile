@@ -25,14 +25,14 @@ pipeline {
             steps { 
                 sh '''
                     ls -la
-                    cat build/static/index.html
+                    cat build/index.html
                 '''
             }
+        }
         }
     post{
         success{
             archiveArtifacts artifacts: 'build/**'
         }
-    }
-}
+    }   
 }
