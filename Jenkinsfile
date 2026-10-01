@@ -26,9 +26,12 @@ pipeline {
                 sh '''
                     ls -la
                     cat build/static/index.html
-                    npm run test
                 '''
             }
+        }
+    post{
+        success{
+            archiveArtifacts artifacts: 'build/**'
         }
     }
 }
