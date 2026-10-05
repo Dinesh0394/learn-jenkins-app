@@ -2,16 +2,16 @@ pipeline {
     agent any
 
     stages {
+
         stage('Build') {
             agent {
-                docker{
-                image 'node:18-alpine'
-                reuseNode true
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
                 }
-            
             }
+
             steps {
-                cleanWs()
                 sh '''
                     ls -la
                     node --version
@@ -22,28 +22,29 @@ pipeline {
                 '''
             }
         }
+
         stage('Test') {
             agent {
-                docker{
-                image 'node:18-alpine'
-                reuseNode true
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
                 }
-            
             }
-            steps { 
+
+            steps {
                 sh '''
                     ls -la
                     test -f build/index.html
-                    npm test
+                    CI=true npm test -- --watchAll=false
                 '''
             }
         }
-        }
-    post{
+    }
+
+    post {
         always {
-            cleanWs()
             junit 'test-results/junit.xml'
-            
+            cleanWs()
         }
-    }   
+    }
 }
