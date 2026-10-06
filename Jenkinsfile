@@ -4,7 +4,7 @@ pipeline {
     environment {
         NETLIFY_SITE_ID = 'b17192a9-8d95-4b57-a290-26d646bd07fc'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
-    }
+        }
 
     stages {
 
@@ -70,6 +70,7 @@ pipeline {
                             npx playwright test --reporter=html
                         '''
                     }
+                
 
                     post {
                         always {
@@ -80,7 +81,42 @@ pipeline {
                                 keepAll: false,
                                 reportDir: 'playwright-report',
                                 reportFiles: 'index.html',
-                                reportName: 'HTML Report',
+                                reportName: 'HTML Report Local',
+                                reportTitles: '',
+                                useWrapperFileDirectly: true
+                            ])
+                        }
+                    }
+                }
+
+                stage('Prod E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.63.0-noble'
+                            reuseNode true
+                        }
+                    }
+                    environment {
+                        CI_ENVIRONMENT_URL = 'https://stately-sundae-7ea4ad.netlify.app'
+                    }
+
+                    steps {
+                        sh '''
+                            npx playwright test --reporter=html
+                        '''
+                    }
+                
+
+                    post {
+                        always {
+                            publishHTML([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: false,
+                                icon: '',
+                                keepAll: false,
+                                reportDir: 'playwright-report',
+                                reportFiles: 'index.html',
+                                reportName: 'HTML Report Prod',
                                 reportTitles: '',
                                 useWrapperFileDirectly: true
                             ])
