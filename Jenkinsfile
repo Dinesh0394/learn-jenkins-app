@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        NETLIFY_SITE_ID = 'b17192a9-8d95-4b57-a290-26d646bd07fc'
+    }
+
     stages {
 
         stage('Build') {
@@ -98,6 +102,8 @@ pipeline {
                 sh '''
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
+                echo "Deploying to Netlify..."
+                echo "Site ID: ${NETLIFY_SITE_ID}"
 
                 '''
             }
